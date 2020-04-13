@@ -1,0 +1,70 @@
+<resources>
+    //START
+    <string name="app_name">ForEvents</string>
+    <string name="start_tv">Miles de eventos están ocurriendo a tu alrededor, no te los pierdas.</string>
+    <string name="start_button">Crear una cuenta</string>
+    <string name="question_account_tv">¿Ya tienes una cuenta?</string>
+    <string name="login_tv">Iniciar sesión</string>
+
+    //LOGIN Y SIGNUP
+    <string name="loginFE_tv">Iniciar sesión en ForEvents.</string>
+    <string name="login_button">Inicia sesión</string>
+    <string name="email_et">Email</string>
+    <string name="password_et">Contraseña</string>
+    <string name="question_signup_tv">¿Aún no tienes cuenta? Registrate</string>
+    <string name="question_forget_password_tv">¿Olvidaste tu contraseña?</string>
+
+    <string name="signupFE_tv">Crea tu cuenta</string>
+    <string name="signup_button">Registrarse</string>
+    <string name="username_et">Nombre de usuario</string>
+    <string name="name_et">Nombre</string>
+
+
+    //VARIOS
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="search_user_et">Buscar...</string>
+    <string name="saved_events_tv">Eventos guardados</string>
+    <string name="edit_profile_tv">Editar perfil</string>
+    <string name="perfil_tv">Perfil</string>
+    <string name="notifications_tv">Notificaciones</string>
+    <string name="save_button">Guardar</string>
+    <string name="change_photo_tv">Cambiar foto de perfil</string>
+    <string name="bio_et">Biografía</string>
+    <string name="publico_rb">Público</string>
+    <string name="privado_rb">Privado</string>
+    <string name="followers_tv">Seguidores</string>
+    <string name="tipo_tv">Tipo de Evento: </string>
+
+    //ADD EVENTO
+    <string name="add_event_button">Añadir Evento</string>
+    <string name="image_event_tv">Añade el cartel del evento</string>
+    <string name="name_event_tv">Titulo del evento</string>
+    <string name="description_event_tv">Descripcion del evento...</string>
+    <string name="fecha_ini_event_et">Fecha de inicio</string>
+    <string name="hora_ini_event_et">Hora de inicio</string>
+    <string name="fecha_fin_event_et">Fecha de fin</string>
+    <string name="hora_fin_event_et">Hora de fin</string>
+    <string name="ubicacion_event_tv">Ubicacion del evento</string>
+    <string name="aforo_event_tv">Aforo del evento</string>
+    <string name="tematica_event_tv">Tematica del evento</string>
+    <string name="tipo_event_tv">Tipo del evento</string>
+    <string name="configuracion_tv">Configuración y privacidad</string>
+    <string name="setting_tv">Ajustes</string>
+    <string name="logout_tv">Cerrar sesión</string>
+
+    <string-array name="tematica_spinner">
+        <item>Acádemico</item>
+        <item>Comunitario</item>
+        <item>Cultural</item>
+        <item>Deportivo</item>
+        <item>Empresarial</item>
+        <item>Ocio</item>
+        <item>Politico</item>
+        <item>Social</item>
+    </string-array>
+
+
+</resources>
