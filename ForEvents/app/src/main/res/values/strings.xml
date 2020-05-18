@@ -27,9 +27,11 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="search_user_et">Buscar...</string>
     <string name="saved_events_tv">Eventos guardados</string>
+    <string name="memory_events_tv">Momentos personales</string>
     <string name="edit_profile_tv">Editar perfil</string>
     <string name="perfil_tv">Perfil</string>
     <string name="notifications_tv">Notificaciones</string>
+    <string name="agend_tv">Mi Agenda</string>
     <string name="save_button">Guardar</string>
     <string name="change_photo_tv">Cambiar foto de perfil</string>
     <string name="bio_et">Biografía</string>

@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -36,19 +40,27 @@ import com.victor.forevents.R;
 import com.victor.forevents.model.Event;
 import com.victor.forevents.model.User;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
     public Context context;
     public List<Event> events;
+    public String tag;
 
     private FirebaseUser firebaseUser;
 
-    public EventAdapter(Context context, List<Event> events) {
+    public EventAdapter(Context context, List<Event> events, String tag) {
         this.context = context;
         this.events = events;
+        this.tag = tag;
     }
 
     @NonNull
@@ -67,6 +79,52 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         final Event event = events.get(position);
 
 
+        String valor_mes = "";
+        valor_mes = nombreMes(event.getFechaInicio());
+
+        String valor_mes_completo = "";
+        valor_mes_completo = nombreMesCompleto(event.getFechaInicio());
+
+
+        String[] fechaDividida = event.getFechaInicio().split("/");
+        String dias = fechaDividida[0];
+        String mes = fechaDividida[1];
+        String anio = fechaDividida[2];
+
+
+        if(tag.equals("attend")){
+
+            String valor_dia = "";
+            valor_dia = diaSemana(event.getFechaInicio());
+
+            if(position==0){
+
+                if(event.getFechaInicio().equals("")){
+                    holder.fecha_titulo.setVisibility(View.GONE);
+                }else {
+                    holder.fecha_titulo.setVisibility(View.VISIBLE);
+                    holder.fecha_titulo.setText(valor_dia+ ", "+dias+" "+valor_mes_completo+" "+anio);
+                }
+
+            }else {
+                if (!(events.get(position - 1).getFechaInicio().equals(event.getFechaInicio()))) {
+
+                    if (event.getFechaInicio().equals("")) {
+                        holder.fecha_titulo.setVisibility(View.GONE);
+                    } else {
+                        holder.fecha_titulo.setVisibility(View.VISIBLE);
+                        holder.fecha_titulo.setText(valor_dia+ " "+valor_mes+" "+event.getFechaInicio());
+                    }
+
+                }
+
+            }
+
+        }else{
+            holder.fecha_titulo.setVisibility(View.GONE);
+        }
+
+
         Glide.with(context).load(event.getPostimage()).apply(new RequestOptions().placeholder(R.drawable.placeholder)).into(holder.post_image);
 
             if (event.getNombre().equals("")) {
@@ -76,11 +134,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 holder.titulo.setText(event.getNombre());
             }
 
-            if(event.getFechaInicio().equals("")){
-                holder.fecha.setVisibility(View.GONE);
-            }else {
-                holder.fecha.setVisibility(View.VISIBLE);
-                holder.fecha.setText(event.getFechaInicio());
+            if (event.getFechaInicio().equals("")) {
+                holder.dia.setVisibility(View.GONE);
+                holder.nombreMes.setVisibility(View.GONE);
+            } else {
+                holder.dia.setVisibility(View.VISIBLE);
+                holder.nombreMes.setVisibility(View.VISIBLE);
+                holder.dia.setText(dias);
+                holder.nombreMes.setText(valor_mes);
             }
 
             if (event.getUbicacion().equals("")) {
@@ -94,7 +155,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
         //isLikes(event.getPostid() , holder.like);
         //numLikes(holder.likes , event.getPostid());
-
         //isSaved(event.getPostid() , holder.save);
 
 
@@ -132,7 +192,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             }
         });
 
-        holder.more.setOnClickListener(new View.OnClickListener() {
+       /* holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, v);
@@ -143,6 +203,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                             case R.id.edit:
                                 editPost(event.getPostid());
                                 return true;
+                            case R.id.share:
+                                BitmapDrawable bitmapDrawable = (BitmapDrawable)holder.post_image.getDrawable();
+                                if(bitmapDrawable == null){
+                                    shareTextOnly(event.getNombre(), event.getDescripcion());
+                                }else{
+                                    Bitmap bitmap = bitmapDrawable.getBitmap();
+                                    shareImageAndText(event.getNombre(),event.getDescripcion(),bitmap);
+
+                                }
+
+                            return true;
                             case R.id.delete:
                                 FirebaseDatabase.getInstance().getReference("Posts").child(event.getPostid()).removeValue()
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -173,35 +244,54 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             }
         });
 
-/*
-        holder.save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(holder.save.getTag().equals("save")){
-                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid()).child(event.getPostid()).setValue(true);
-                }else{
-                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid()).child(event.getPostid()).removeValue();
-                }
-
-            }
-        });
+        */
 
 
+    }
 
-        holder.like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(holder.like.getTag().equals("like")){
-                    FirebaseDatabase.getInstance().getReference().child("Likes").child(event.getPostid()).child(firebaseUser.getUid()).setValue(true);
-                    addNotifications(event.getPublisher(), event.getPostid());
-                }else{
-                    FirebaseDatabase.getInstance().getReference().child("Likes").child(event.getPostid()).child(firebaseUser.getUid()).removeValue();
-                }
-            }
-        });
 
-*/
+    private void shareImageAndText(String nombre, String descripcion, Bitmap bitmap) {
 
+        String shareBody = nombre +"\n"+ descripcion;
+
+        Uri uri = saveImageToShare(bitmap);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.putExtra(Intent.EXTRA_TEXT,shareBody);
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
+        intent.setType("image/png");
+        context.startActivity(Intent.createChooser(intent, "Compartir via "));
+
+
+    }
+
+    private Uri saveImageToShare(Bitmap bitmap) {
+        File imageFolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
+        try{
+            imageFolder.mkdirs();
+            File file = new File(imageFolder, "shared_event.png");
+
+            FileOutputStream stream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.flush();
+            stream.close();
+            uri = FileProvider.getUriForFile(context, "com.victor.forevents.fileprovider", file);
+
+        }catch (Exception e){
+            Toast.makeText(context,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+        return uri;
+    }
+
+    private void shareTextOnly(String nombre, String descripcion) {
+            String shareBody = nombre +"\n"+ descripcion;
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT,"Subject Here");
+            intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            context.startActivity(Intent.createChooser(intent, "Compartir via"));
     }
 
     @Override
@@ -209,54 +299,34 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         return events.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView image_profile, post_image,more, like,comment, save;
-        public TextView username,likes,publisher,titulo,fecha,ubicacion,comments,descripcion;
+        public TextView username,likes,publisher,titulo,fecha,ubicacion,comments,descripcion,fecha_titulo,dia,nombreMes;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             image_profile = itemView.findViewById (R.id.profile_image);
+            fecha_titulo = itemView.findViewById(R.id.fecha_tv);
             post_image = itemView.findViewById(R.id.post_image_event);
+            dia = itemView.findViewById(R.id.dia);
+            nombreMes = itemView.findViewById(R.id.nombreMes);
            // like = itemView.findViewById(R.id.like);
            // likes = itemView.findViewById(R.id.likes);
             //comment = itemView.findViewById(R.id.comment);
           //  save = itemView.findViewById(R.id.save);
             username = itemView.findViewById(R.id.publisher);
             titulo = itemView.findViewById(R.id.titulo_evento);
-            fecha =itemView.findViewById(R.id.fecha);
+            //fecha =itemView.findViewById(R.id.fecha);
             ubicacion = itemView.findViewById(R.id.ubicacion);
-            more = itemView.findViewById(R.id.more_options);
+            //more = itemView.findViewById(R.id.more_options);
 
         }
     }
 
-    private void isLikes (String postid , final ImageView imageView){
 
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Likes").child(postid);
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(firebaseUser.getUid()).exists()){
-                    imageView.setImageResource(R.drawable.ic_like_pink);
-                    imageView.setTag("liked");
-                }else{
-                    imageView.setImageResource(R.drawable.ic_like);
-                    imageView.setTag("like");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 
     private void addNotifications(String userid, String postid){
@@ -302,31 +372,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
-
-
-    private void isSaved(final String postid, final ImageView imageView){
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(postid).exists()){
-                    imageView.setImageResource(R.drawable.ic_save_pink);
-                    imageView.setTag("saved");
-                }else{
-                    imageView.setImageResource(R.drawable.ic_save);
-                    imageView.setTag("save");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
@@ -383,6 +428,112 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
             }
         });
+    }
+
+
+    public static String diaSemana(String fecha) {
+
+        String[] fechaDividida = fecha.split("/");
+        int dias = Integer.parseInt(fechaDividida[0]);
+        int mes = Integer.parseInt(fechaDividida[1]);
+        int anio = Integer.parseInt(fechaDividida[2]);
+
+        String dia="";
+        int numD;
+        Calendar c = Calendar.getInstance(Locale.US);
+        c.set(anio,mes-1,dias);
+        numD=c.get(Calendar.DAY_OF_WEEK);
+        if(numD == Calendar.SUNDAY)
+            dia="Domingo";
+        else if(numD == Calendar.MONDAY)
+            dia="Lunes";
+        else if(numD == Calendar.TUESDAY)
+            dia="Martes";
+        else if(numD == Calendar.WEDNESDAY)
+            dia="Miércoles";
+        else if(numD == Calendar.THURSDAY)
+            dia="Jueves";
+        else if(numD == Calendar.FRIDAY)
+            dia="Viernes";
+        else if(numD == Calendar.SATURDAY)
+            dia="Sábado";
+        return dia;
+    }
+
+    public static String nombreMes(String fecha){
+        String[] fechaDividida = fecha.split("/");
+        int dias = Integer.parseInt(fechaDividida[0]);
+        int mes = Integer.parseInt(fechaDividida[1]);
+        int anio = Integer.parseInt(fechaDividida[2]);
+        String nombreMes="";
+
+        if(mes == 1){
+            nombreMes = "ENE";
+        }else if(mes == 2){
+            nombreMes = "FEB";
+        }else if(mes == 3){
+            nombreMes = "MAR";
+        }else if(mes == 4){
+            nombreMes = "ABR";
+        } else if(mes == 5){
+            nombreMes = "MAY";
+        }else if(mes == 6){
+            nombreMes = "JUN";
+        }else if(mes == 7){
+            nombreMes = "JUL";
+        }else if(mes == 8){
+            nombreMes = "AGO";
+        }else if(mes == 9){
+            nombreMes = "SEP";
+        }else if(mes == 10){
+            nombreMes = "OCT";
+        }else if(mes == 11){
+            nombreMes = "NOV";
+        }else if(mes == 12){
+            nombreMes = "DIC";
+        }
+
+        return nombreMes;
+
+
+    }
+
+    public static String nombreMesCompleto(String fecha){
+        String[] fechaDividida = fecha.split("/");
+        int dias = Integer.parseInt(fechaDividida[0]);
+        int mes = Integer.parseInt(fechaDividida[1]);
+        int anio = Integer.parseInt(fechaDividida[2]);
+        String nombreMes="";
+
+        if(mes == 1){
+            nombreMes = "Enero";
+        }else if(mes == 2){
+            nombreMes = "Febrero";
+        }else if(mes == 3){
+            nombreMes = "Marzo";
+        }else if(mes == 4){
+            nombreMes = "Abril";
+        } else if(mes == 5){
+            nombreMes = "Mayo";
+        }else if(mes == 6){
+            nombreMes = "Junio";
+        }else if(mes == 7){
+            nombreMes = "Julio";
+        }else if(mes == 8){
+            nombreMes = "Agosto";
+        }else if(mes == 9){
+            nombreMes = "Septiembre";
+        }else if(mes == 10){
+            nombreMes = "Octubre";
+        }else if(mes == 11){
+            nombreMes = "Noviembre";
+        }else if(mes == 12){
+            nombreMes = "Diciembre";
+        }
+
+        return nombreMes;
+
+
     }
 
 

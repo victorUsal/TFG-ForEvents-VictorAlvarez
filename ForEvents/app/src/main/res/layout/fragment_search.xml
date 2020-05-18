@@ -18,6 +18,10 @@
             android:background="?android:attr/windowBackground"
             android:id="@+id/toolbar">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,24 +34,69 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="55dp"
                 android:id="@+id/search_bar"
-                android:layout_marginRight="60dp"
                 android:drawableLeft="@drawable/ic_search_gray"
                 android:drawablePadding="10dp"
                 android:background="@drawable/edit_text_style"
                 android:hint="@string/search_user_et"
+                android:layout_toRightOf="@+id/ic_menu"
                 android:padding="8dp"/>
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ic_filter"
+                android:visibility="gone"
+                android:src="@drawable/ic_filtro"
+                android:background="?android:attr/windowBackground"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+
+             />
+
+            </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_below="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ic_usuario"
+            android:icon="@drawable/ic_usuario"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/events_attended"
+            android:icon="@drawable/ic_calendario_search" />
+
+    </com.google.android.material.tabs.TabLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/bar"/>
+        android:layout_below="@id/tablayout"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@id/tablayout"/>
 
 </RelativeLayout>

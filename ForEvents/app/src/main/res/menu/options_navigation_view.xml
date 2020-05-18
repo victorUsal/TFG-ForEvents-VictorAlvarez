@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
+    <group
+        android:id="@+id/menu_opciones">
     <item
         android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_usuario"
         android:title="Perfil" />
     <item
         android:id="@+id/nav_save_events"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_save"
         android:title="Eventos Guardados" />
 
     <item
-        android:id="@+id/nav_configuration"
-        android:icon="@drawable/ic_config"
-        android:title="Configuración y privacidad" />
+        android:id="@+id/nav_personal_events"
+        android:icon="@drawable/ic_personal_moments"
+        android:title="Momentos personales" />
+    </group>
+
+
+
+    <group
+        android:id="@+id/menu_ajustes">
+        <item
+            android:id="@+id/nav_configuration"
+            android:icon="@drawable/ic_config"
+            android:title="Configuración y privacidad" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help"
+            android:title="Centro de ayuda" />
+    </group>
+
+
+
+
+
 
 </menu>

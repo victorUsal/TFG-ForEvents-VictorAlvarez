@@ -4,11 +4,32 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:background="@drawable/button_style_follow"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:id="@+id/fecha_tv"
+        android:visibility="gone"
+        />
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/fecha_tv"
         app:cardCornerRadius="5dp"
-        android:layout_margin="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
 
 
         <LinearLayout
@@ -20,11 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
                 <ImageView
                     android:id="@+id/post_image_event"
                     android:layout_width="match_parent"
-                    android:layout_height="185dp"
+                    android:layout_height="200dp"
                     android:scaleType="centerCrop" />
 
                 <ImageView
@@ -32,13 +52,7 @@
                     android:layout_height="50dp"
                     android:src="@drawable/gradient_black" />
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_plus_options_white"
-                    android:id="@+id/more_options"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="15dp" />
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -66,55 +80,114 @@
 
             </RelativeLayout>
 
-            <TextView
-                android:id="@+id/titulo_evento"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/colorBlack"
-                android:textSize="16sp" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="5dp">
 
-                <ImageView
-                    android:id="@+id/icon_ubicacion"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_ubicacion"></ImageView>
-
-                <TextView
-                    android:id="@+id/ubicacion"
-                    android:layout_width="150dp"
-                    android:maxLines="2"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/icon_ubicacion" />
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
 
-                <TextView
-                    android:id="@+id/fecha"
-                    android:layout_width="80dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/dia"
+                        android:layout_alignParentLeft="true"
+
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBlack"
+                        android:text="06"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/nombreMes"
+                        android:layout_alignParentLeft="true"
+
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorBlack"
+                        android:text="MAR"/>
+
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@android:color/darker_gray" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="10dp" />
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="5dp"
-                    android:layout_toLeftOf="@+id/fecha"
-                    android:src="@drawable/ic_calendario_gray" />
+                    <TextView
+                        android:id="@+id/titulo_evento"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="2dp"
+                        android:textColor="@color/colorBlack"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:text="Concierto Benefico"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/icon_ubicacion"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_ubicacion"/>
+
+                        <TextView
+                            android:id="@+id/ubicacion"
+                            android:layout_width="245dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/icon_ubicacion"
+                            android:textSize="15sp"
+                            android:text="Calle Béjar Nº 40,Plasencia"
+                            />
 
 
-            </RelativeLayout>
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
 
 
         </LinearLayout>

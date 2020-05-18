@@ -19,38 +19,41 @@ import com.google.firebase.database.ValueEventListener;
 import com.victor.forevents.adapter.EventAdapter;
 import com.victor.forevents.model.Event;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class SavedEventsActivity extends AppCompatActivity {
+public class MemoryEventsActivity extends AppCompatActivity {
 
-    private List <String> mySaves;
+    private List <String> myMemories;
 
     RecyclerView recyclerViewSaves;
     EventAdapter eventAdapter;
     List<Event> eventList;
 
+    FirebaseUser firebaseUser;
     ImageButton back;
 
-    FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_saved_events);
+        setContentView(R.layout.activity_memory_events);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         recyclerViewSaves = findViewById(R.id.recycler_view);
         recyclerViewSaves.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManagerSaves = new LinearLayoutManager(this);
-        linearLayoutManagerSaves.setReverseLayout(true);
-        linearLayoutManagerSaves.setStackFromEnd(true);
-        recyclerViewSaves.setLayoutManager(linearLayoutManagerSaves);
+        LinearLayoutManager linearLayoutManagerMemories = new LinearLayoutManager(this);
+        linearLayoutManagerMemories.setReverseLayout(true);
+        linearLayoutManagerMemories.setStackFromEnd(true);
+        recyclerViewSaves.setLayoutManager(linearLayoutManagerMemories);
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(this , eventList, "save");
+        eventAdapter = new EventAdapter(this , eventList, "memories");
         recyclerViewSaves.setAdapter(eventAdapter);
-
         back = findViewById(R.id.ic_back);
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -60,23 +63,27 @@ public class SavedEventsActivity extends AppCompatActivity {
             }
         });
 
-        mySaves();
+
+        myMemories();
+
+
 
     }
 
-    private void mySaves(){
-        mySaves = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid());
+
+    private void myMemories(){
+        myMemories = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Attends").child(firebaseUser.getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mySaves.clear();
+                myMemories.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    mySaves.add(snapshot.getKey());
+                    myMemories.add(snapshot.getKey());
                 }
 
-                readSaves();
+                readMemories();
             }
 
             @Override
@@ -87,7 +94,7 @@ public class SavedEventsActivity extends AppCompatActivity {
     }
 
 
-    private void readSaves(){
+    private void readMemories(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -95,9 +102,13 @@ public class SavedEventsActivity extends AppCompatActivity {
                 eventList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Event event = snapshot.getValue(Event.class);
-                    for(String id : mySaves){
-                        if(event.getPostid().equals(id)){
-                            eventList.add(event);
+                    for(String id : myMemories){
+                        try {
+                            if(event.getPostid().equals(id) && event.getTipo().equals("Privado") && compararFechas(event.getFechaInicio())){
+                                eventList.add(event);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -111,4 +122,30 @@ public class SavedEventsActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private boolean compararFechas(String fechaInicio) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date date = new Date();
+        final String fecha = dateFormat.format(date);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date evento = sdf.parse(fechaInicio);
+        Date actual = sdf.parse(fecha);
+
+        if(actual.compareTo(evento)>= 0){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+
+
+
 }
+
+
+
+

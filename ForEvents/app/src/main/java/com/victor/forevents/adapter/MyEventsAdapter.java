@@ -44,8 +44,8 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
 
         final Event event = myEvents.get(position);
 
-        //Glide.with(context).load(event.getPostimage()).into(holder.post_event);
-        Glide.with(context).load(event.getPostimage()).apply(new RequestOptions().placeholder(R.drawable.placeholder)).into(holder.post_event);
+        Glide.with(context).load(event.getPostimage()).into(holder.post_event);
+       // Glide.with(context).load(event.getPostimage()).apply(new RequestOptions().placeholder(R.drawable.placeholder)).into(holder.post_event);
         holder.titulo.setText(event.getNombre());
 
         holder.post_event.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +75,6 @@ public class MyEventsAdapter extends RecyclerView.Adapter<MyEventsAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
 
             post_event = itemView.findViewById(R.id.post_image_event);
             titulo = itemView.findViewById(R.id.titulo_evento);

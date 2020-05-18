@@ -5,6 +5,9 @@
     <item android:id="@+id/edit"
         android:title="Editar evento"/>
 
+    <item android:id="@+id/share"
+        android:title="Compartir evento"/>
+
     <item android:id="@+id/delete"
         android:title="Eliminar evento"/>
 

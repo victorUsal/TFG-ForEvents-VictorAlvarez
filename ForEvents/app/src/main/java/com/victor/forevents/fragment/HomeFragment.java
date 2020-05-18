@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
     private List<Event> eventList;
 
     private List <String> followingList;
+    FirebaseUser firebaseUser;
 
 
     ImageButton imageButton;
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         imageButton = (ImageButton)view.findViewById(R.id.ic_menu);
         drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer);
         navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
@@ -73,7 +75,7 @@ public class HomeFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(getContext() , eventList);
+        eventAdapter = new EventAdapter(getContext() , eventList, "home");
         recyclerView.setAdapter(eventAdapter);
 
         progressBar = view.findViewById(R.id.progress_circular);
@@ -118,7 +120,7 @@ public class HomeFragment extends Fragment {
                 for(DataSnapshot snapshot :dataSnapshot.getChildren()){
                     Event event = snapshot.getValue(Event.class);
                     for(String id : followingList){
-                        if(event.getPublisher().equals(id)){
+                        if(event.getPublisher().equals(id) || event.getPublisher().equals(firebaseUser.getUid())){
                             eventList.add(event);
                         }
                     }

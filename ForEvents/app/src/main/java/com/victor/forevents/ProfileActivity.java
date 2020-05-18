@@ -14,9 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,15 +43,23 @@ public class ProfileActivity extends AppCompatActivity {
     Button edit_profile;
     ImageButton back;
 
+    public TabLayout tabLayout;
+    TabItem my_events,events_attended;
+
+    private List<String> myAttended;
+
     RecyclerView recyclerView;
     MyEventsAdapter myEventsAdapter;
     List<Event> eventList;
+
+    RecyclerView recyclerView_attended;
+    MyEventsAdapter myEventsAdapter_attended;
+    List<Event> eventList_attended;
 
 
     FirebaseUser firebaseUser;
     String profileid;
 
-    ImageButton my_events, saved_events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +79,37 @@ public class ProfileActivity extends AppCompatActivity {
         bio = findViewById(R.id.bio);
         username =findViewById(R.id.username);
         edit_profile = findViewById(R.id.edit_profile);
-        //my_events = findViewById(R.id.my_events);
+        my_events = findViewById(R.id.my_events);
+        events_attended = findViewById(R.id.events_attended);
         back = findViewById(R.id.ic_back);
+
+        tabLayout = findViewById(R.id.tablayout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch(tab.getPosition()){
+                    case 0:
+                        recyclerView.setVisibility(View.VISIBLE);
+                        recyclerView_attended.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        recyclerView.setVisibility(View.GONE);
+                        recyclerView_attended.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -79,17 +119,28 @@ public class ProfileActivity extends AppCompatActivity {
         myEventsAdapter = new MyEventsAdapter(this, eventList);
         recyclerView.setAdapter(myEventsAdapter);
 
+        recyclerView_attended = findViewById(R.id.recycler_view_attended);
+        recyclerView_attended.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager_attended= new GridLayoutManager(this, 2);
+        recyclerView_attended.setLayoutManager(linearLayoutManager_attended);
+        eventList_attended = new ArrayList<>();
+        myEventsAdapter_attended = new MyEventsAdapter(this, eventList_attended);
+        recyclerView_attended.setAdapter(myEventsAdapter_attended);
+
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerView_attended.setVisibility(View.GONE);
+
         userInfo();
         getFollowers();
         getNumEvents();
         myEvents();
+        myEventsAttended();
 
         if(profileid.equals(firebaseUser.getUid())){
             edit_profile.setText("Editar perfil");
         }else{
             checkFollow();
         }
-
 
         edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +194,22 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        my_events.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerView_attended.setVisibility(View.GONE);
+            }
+        });
+
+        events_attended.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setVisibility(View.GONE);
+                recyclerView_attended.setVisibility(View.VISIBLE);
+            }
+        });*/
 
     }
 
@@ -285,6 +352,51 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void myEventsAttended(){
+        myAttended = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Attends").child(profileid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    myAttended.add(snapshot.getKey());
+                }
+
+                readAttended();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readAttended(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                eventList_attended.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Event event = snapshot.getValue(Event.class);
+
+                    for(String id : myAttended){
+                        if(event.getPostid().equals(id) && event.getTipo().equals("Público")){
+                            eventList_attended.add(event);
+                        }
+                    }
+                }
+                myEventsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

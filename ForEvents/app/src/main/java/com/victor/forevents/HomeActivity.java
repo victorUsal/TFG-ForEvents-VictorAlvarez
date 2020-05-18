@@ -2,21 +2,33 @@ package com.victor.forevents;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.victor.forevents.fragment.CalendarFragment;
 import com.victor.forevents.fragment.HomeFragment;
 import com.victor.forevents.fragment.NotificationFragment;
 import com.victor.forevents.fragment.SearchFragment;
+import com.victor.forevents.model.User;
 
 public class HomeActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener{
 
@@ -24,17 +36,20 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     public BottomNavigationView bottomNavigationView;
     Fragment selectedFragment = new HomeFragment();
 
+    FirebaseUser firebaseUser;
     DrawerLayout drawer;
     NavigationView navigationView;
+    TextView email, fullname;
+    ImageView image_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        String id = firebaseAuth.getCurrentUser().getUid();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
@@ -43,6 +58,11 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View hView = navigationView.getHeaderView(0);
+        email = hView.findViewById(R.id.email);
+        fullname = hView.findViewById(R.id.fullname);
+        image_profile = hView.findViewById(R.id.image_profile);
+        userInfo();
 
         if (savedInstanceState == null) {
             //Realiza la transacción del Fragmento el cual mediante preferencias podemos determinar cual fue el último.
@@ -112,6 +132,11 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 startActivity(new Intent(HomeActivity.this,SavedEventsActivity.class));
                 break;
 
+            case R.id.nav_personal_events:
+                selectedFragment = null;
+                startActivity(new Intent(HomeActivity.this,MemoryEventsActivity.class));
+                break;
+
             case R.id.nav_configuration:
                 selectedFragment = null;
                 startActivity(new Intent(HomeActivity.this,OptionsActivity.class));
@@ -125,4 +150,35 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         }
         return true;
     }
+
+
+
+    private void userInfo(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(this == null){
+                    return;
+                }
+
+                User user = dataSnapshot.getValue(User.class);
+
+                Glide.with(getApplicationContext()).load(user.getImagen()).into(image_profile);
+                email.setText(user.getEmail());
+                fullname.setText(user.getName());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
+
+
 }

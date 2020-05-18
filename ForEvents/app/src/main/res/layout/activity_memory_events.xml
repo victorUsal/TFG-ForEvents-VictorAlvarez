@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.CalendarFragment">
-
+    tools:context=".MemoryEventsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -27,38 +26,23 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ic_menu"
-                    android:src="@drawable/ic_menu"
+                    android:id="@+id/ic_back"
+                    android:src="@drawable/ic_back"
                     android:background="?android:attr/windowBackground"
                     android:layout_margin="10dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/name_notification"
+                    android:id="@+id/name_saved_event"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:text="@string/agend_tv"
+                    android:text="@string/memory_events_tv"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="@color/colorPrimaryDark" />
 
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ic_calendar"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_calendario_gray"
-                    android:layout_centerVertical="true"
-                    android:background="?android:attr/windowBackground"
-                    android:layout_marginRight="15dp"/>
-
-
-
             </RelativeLayout>
-
-
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

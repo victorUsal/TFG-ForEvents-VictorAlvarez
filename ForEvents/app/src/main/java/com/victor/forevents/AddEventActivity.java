@@ -42,6 +42,7 @@ import com.victor.forevents.dialog.DatePickerFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class AddEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -132,7 +133,6 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
         fechaFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final Calendar calendario = Calendar.getInstance();
                 int yy = calendario.get(Calendar.YEAR);
                 int mm = calendario.get(Calendar.MONTH);
@@ -146,6 +146,7 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
                     }
                 }, yy, mm, dd);
                 datePicker.show();
+
             }
         });
 
@@ -277,7 +278,8 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
                         hashMap.put("tipo",tipoEvento);
                         hashMap.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                        reference.child(postid).setValue(hashMap);
+                        reference.child(postid).
+                                setValue(hashMap);
 
                         progressBar.setVisibility(View.GONE);
 
