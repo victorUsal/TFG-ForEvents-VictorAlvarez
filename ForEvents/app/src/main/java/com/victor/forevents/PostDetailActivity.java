@@ -6,8 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,12 +14,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -33,35 +28,42 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 import com.victor.forevents.model.Event;
 import com.victor.forevents.model.Rating;
+import com.victor.forevents.model.Tokens;
 import com.victor.forevents.model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.victor.forevents.adapter.EventAdapter.diaSemana;
 import static com.victor.forevents.adapter.EventAdapter.nombreMesCompleto;
@@ -71,9 +73,12 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
     private FirebaseUser firebaseUser;
     Event event;
 
+    public String mtoken="";
+    public String muser;
 
-    ImageView image_profile, post_image, like,comment, save;
-    TextView username,likes,publisher,titulo,fecha_ini,fecha_fin,hora_ini,hora_fin,ubicacion,comments,descripcion,aforo,tematica,tipo;
+
+    ImageView image_profile, post_image, like,comment, save,invitation;
+    TextView username,likes,publisher,titulo,fecha_ini,fecha_fin,hora_ini,hora_fin,ubicacion,descripcion,aforo,tematica,tipo;
     FloatingActionButton btnRating;
     Button btnAsistir;
     TabLayout tabLayout;
@@ -83,6 +88,7 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
 
     LinearLayout info_layout, opiniones_layout;
 
+    FirebaseAnalytics analytics;
     FirebaseDatabase database;
     DatabaseReference ratingTbl;
 
@@ -100,6 +106,7 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
+
         image_profile = findViewById (R.id.profile_image);
         post_image = findViewById(R.id.post_image_event);
         more_options = findViewById(R.id.more_options);
@@ -107,7 +114,8 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
       //  like = findViewById(R.id.like);
         btnAsistir = findViewById(R.id.button_asistir);
         // likes = itemView.findViewById(R.id.likes);
-        //comment = itemView.findViewById(R.id.comment);
+        comment = findViewById(R.id.comment);
+        invitation = findViewById(R.id.invitation);
         save = findViewById(R.id.save);
         username = findViewById(R.id.publisher);
         titulo = findViewById(R.id.titulo_evento);
@@ -126,8 +134,10 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
         info_layout = findViewById(R.id.info_layout);
         opiniones_layout = findViewById(R.id.opiniones_layout);
 
+        userInfo();
         readPost();
         getRating(postid);
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +145,7 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
                 finish();
             }
         });
+
 
         more_options.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,14 +159,14 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
                                 editPost(event.getPostid());
                                 return true;
                             case R.id.share:
-                                BitmapDrawable bitmapDrawable = (BitmapDrawable)post_image.getDrawable();
+                               /* BitmapDrawable bitmapDrawable = (BitmapDrawable)post_image.getDrawable();
                                 if(bitmapDrawable == null){
                                     shareTextOnly(event.getNombre(), event.getDescripcion());
                                 }else{
                                     Bitmap bitmap = bitmapDrawable.getBitmap();
-                                    shareImageAndText(event.getNombre(),event.getDescripcion(),bitmap);
-
+                                    //shareImageAndText(event.getNombre(),event.getDescripcion(),bitmap);
                                 }
+                                */
 
                                 return true;
                             case R.id.delete:
@@ -170,7 +181,7 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
                                         });
                                 return true;
                             case R.id.report:
-                                Toast.makeText(PostDetailActivity.this,"Evento denunciado", Toast.LENGTH_SHORT).show();
+                                reportPost(event.getPostid());
                                 return true;
                             default:
                                 return false;
@@ -210,6 +221,28 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
                 startActivity(new Intent(PostDetailActivity.this, ProfileActivity.class));
             }
         });
+
+
+
+       invitation.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+                startActivity( new Intent(PostDetailActivity.this,SearchUserForInvitationActivity.class));
+                sendInvitation();
+           }
+       });
+
+
+
+    comment.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(PostDetailActivity.this, CommentsActivity.class);
+            intent.putExtra("postid", event.getPostid());
+            intent.putExtra("publisherid", event.getPublisher());
+            startActivity(intent);
+        }
+    });
 
      save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,6 +310,10 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
 
     }
 
+    private void sendInvitation() {
+
+    }
+
     private void editPost(final String postid){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Editar descripcion del evento");
@@ -311,6 +348,49 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
 
         alertDialog.show();
     }
+
+    private void reportPost(final String postid){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Denunciar el evento");
+
+        final EditText editText = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        editText.setLayoutParams(lp);
+        alertDialog.setView(editText);
+
+        alertDialog.setPositiveButton("Denunciar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String mail = "foreventstfg@gmail.com";
+                String asunto = "Denuncia evento: "+postid;
+                String mensaje = editText.getText().toString();
+                dialog.dismiss();
+
+                if(!editText.getText().toString().isEmpty()) {
+                    //Enviamos el email
+                    JavaMailAPI javaMailAPI = new JavaMailAPI(PostDetailActivity.this, mail, asunto, mensaje);
+                    javaMailAPI.execute();
+
+                }else{
+                    Toast.makeText(PostDetailActivity.this,"Introducir motivo de la denuncia", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+
 
     private void getText(String postid, final EditText editText){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts").child(postid);
@@ -394,8 +474,7 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void addvalue() {
-
-
+        //FECHA INICIO
         String valor_mes_completo = "";
         valor_mes_completo = nombreMesCompleto(event.getFechaInicio());
 
@@ -403,11 +482,29 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
         valor_dia = diaSemana(event.getFechaInicio());
 
 
-        String[] fechaDividida = event.getFechaInicio().split("/");
-        String dias = fechaDividida[0];
-        String anio = fechaDividida[2];
+        String[] fechaDividida = event.getFechaInicio().split("-");
+        String anio = fechaDividida[0];
+        String dias = fechaDividida[2];
+
+        String valor_mes_completo_fin = "";
+        String valor_dia_fin = "";
+        String[] fechaDividida_fin;
+        String anio_fin="";
+        String dias_fin="";
+
+        //FECHA FIN
+        if(!event.getFechaFin().equals("Sin determinar"))
+        {
+            valor_mes_completo_fin = nombreMesCompleto(event.getFechaFin());
 
 
+            valor_dia_fin = diaSemana(event.getFechaFin());
+
+            fechaDividida_fin = event.getFechaFin().split("-");
+             anio_fin = fechaDividida_fin[0];
+             dias_fin = fechaDividida_fin[2];
+
+        }
 
         Glide.with(PostDetailActivity.this).load(event.getPostimage()).into(post_image);
 
@@ -441,7 +538,11 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
             fecha_fin.setVisibility(View.GONE);
         } else {
             fecha_fin.setVisibility(View.VISIBLE);
-            fecha_fin.setText(valor_dia+ ", "+dias+" "+valor_mes_completo+" "+anio);
+            if(!event.getFechaFin().equals("Sin determinar")) {
+                fecha_fin.setText(valor_dia_fin + ", " + dias_fin + " " + valor_mes_completo_fin + " " + anio_fin);
+            }else{
+                fecha_fin.setText(event.getFechaFin());
+            }
         }
         if (event.getHoraInicio().equals("")) {
             hora_ini.setVisibility(View.GONE);
@@ -513,29 +614,32 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
             tipo.setText(event.getTipo());
         }
 
+        if(event.getTipo().equals("Privado") && event.getPublisher().equals(firebaseUser.getUid())){
+            invitation.setVisibility(View.VISIBLE);
+        }else{
+            invitation.setVisibility(View.GONE);
+        }
+
         publisherInfo(image_profile, username, event.getPublisher());
 
-        try {
-            if (compararFechas(event.getFechaInicio())) {
-                btnRating.setVisibility(View.VISIBLE);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+        btnRating.setVisibility(View.VISIBLE);
+
 
         isLikes(event.getPostid() , btnAsistir);
         isSaved(event.getPostid() , save);
         isRating(event.getPostid());
+        myToken();
 
     }
 
 
     private boolean compararFechas(String fechaInicio) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
         final String fecha = dateFormat.format(date);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date fechaEvento = sdf.parse(fechaInicio);
         Date actual = sdf.parse(fecha);
 
@@ -631,9 +735,12 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
         hashMap.put("userid", firebaseUser.getUid());
         hashMap.put("text", "Asistirá al evento");
         hashMap.put("postid", postid);
+        hashMap.put("tag", "asistir");
         hashMap.put("isPost", true);
-
         reference.push().setValue(hashMap);
+        llamarEspecifico(muser,"Asistirá al evento");
+        //Toast.makeText(PostDetailActivity.this,mtoken,Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -654,6 +761,28 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
         });
     }
 
+    private void userInfo(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(this == null){
+                    return;
+                }
+
+                User user = dataSnapshot.getValue(User.class);
+
+                muser = user.getUsername();
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 
@@ -741,6 +870,96 @@ public class PostDetailActivity extends AppCompatActivity implements RatingDialo
         });
 
     }
+
+    private void llamarEspecifico(String titulo, String detalle){
+        RequestQueue myrequest = Volley.newRequestQueue(getApplicationContext());
+        JSONObject json = new JSONObject();
+
+        try{
+            json.put("to",mtoken);
+            JSONObject notificacion = new JSONObject();
+            notificacion.put("titulo",titulo);
+            notificacion.put("detalle", detalle);
+
+            json.put("data", notificacion);
+
+            String URL = "https://fcm.googleapis.com/fcm/send";
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,URL,json,null,null){
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String,String> header = new HashMap<>();
+
+                    header.put("content-type", "application/json");
+                    header.put("authorization", "key= AAAA3xj18jc:APA91bEVaKYf4hLZVjdFdl8mOq2tysW7afzZKFET5WMnjZ11FEUy8KytjVntlJE4kLSknq05vWLzyncxLiw8Xi0bMeq0xHpvgpi5-r-tF24h06iRWbHv7iZ9TtezNR-7jjRgcY5wGPGC");
+                    return header;
+                }
+            };
+
+            myrequest.add(request);
+
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void llamartopico(){
+        RequestQueue myrequest = Volley.newRequestQueue(getApplicationContext());
+        JSONObject json = new JSONObject();
+
+        try{
+
+            json.put("to","/topics/"+"enviaratodos");
+            JSONObject notificacion = new JSONObject();
+            notificacion.put("titulo","Soy un titulo");
+            notificacion.put("detalle", "Soy un detalle");
+
+            json.put("data", notificacion);
+
+            String URL = "https://fcm.googleapis.com/fcm/send";
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,URL,json,null,null){
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String,String> header = new HashMap<>();
+
+                    header.put("content-type", "application/json");
+                    header.put("authorization", "key= AAAA3xj18jc:APA91bEVaKYf4hLZVjdFdl8mOq2tysW7afzZKFET5WMnjZ11FEUy8KytjVntlJE4kLSknq05vWLzyncxLiw8Xi0bMeq0xHpvgpi5-r-tF24h06iRWbHv7iZ9TtezNR-7jjRgcY5wGPGC");
+                    return header;
+                }
+            };
+
+            myrequest.add(request);
+
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    private void myToken(){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Tokens").child(event.getPublisher());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Tokens token = dataSnapshot.getValue(Tokens.class);
+                mtoken = token.getToken();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 
 
 

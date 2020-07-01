@@ -55,37 +55,78 @@
         android:orientation="vertical"
         android:layout_below="@id/bar">
 
-        <View
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray_light" />
+            android:layout_height="40dp"
+            android:text="@string/personal_tv"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/cuenta_tv"
+            android:id="@+id/cuenta_btn"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/preferencias"
+            android:text="@string/preferencias"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
+        <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/notificaciones"
+            android:id="@+id/notificacion_ch"
+        android:textColor="@color/colorBlack"
+        android:textSize="16sp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="@string/general"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/forevents_info"
+            android:id="@+id/acerca"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"/>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/settings"
             android:text="@string/setting_tv"
-            android:textColor="@color/colorBlack"
-            android:layout_margin="8dp"
-            android:textSize="16sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray_light" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/logout"
-            android:text="@string/logout_tv"
-            android:textColor="@color/colorBlack"
-            android:layout_margin="8dp"
-            android:textSize="16sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray_light" />
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 

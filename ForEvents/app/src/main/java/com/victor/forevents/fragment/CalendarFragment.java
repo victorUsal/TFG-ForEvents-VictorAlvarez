@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -56,7 +57,7 @@ public class CalendarFragment extends Fragment {
     EventAdapter eventAdapter;
     List<Event> eventList;
 
-
+    TextView no_calend;
     ImageButton imageButton,calendar;
     DrawerLayout drawer;
     NavigationView navigationView;
@@ -82,6 +83,7 @@ public class CalendarFragment extends Fragment {
         recyclerViewAttends.setAdapter(eventAdapter);
 
         calendar = view.findViewById(R.id.ic_calendar);
+        no_calend = view.findViewById(R.id.no_calendar);
         imageButton = (ImageButton)view.findViewById(R.id.ic_menu);
         drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer);
         navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
@@ -107,7 +109,7 @@ public class CalendarFragment extends Fragment {
                 DatePickerDialog datePicker = new DatePickerDialog (getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        selectedDate = twoDigits(dayOfMonth) + "/" + twoDigits(monthOfYear+1) + "/" + year;
+                        selectedDate = year  + "-" + twoDigits(monthOfYear+1) + "-" + twoDigits(dayOfMonth);
                         filterEventForDate(selectedDate);
                     }
                 },yy,mm,dd);
@@ -120,15 +122,23 @@ public class CalendarFragment extends Fragment {
         return view;
     }
 
-    private void filterEventForDate(String selectedDate) {
-        Query query =FirebaseDatabase.getInstance().getReference("Posts").orderByChild("fechaInicio").equalTo(selectedDate);
-        query.addValueEventListener(new ValueEventListener() {
+    private void filterEventForDate(final String selectedDate) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 eventList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Event event = snapshot.getValue(Event.class);
-                    eventList.add(event);
+                    for(String id : myAttends){
+                        try {
+                            if(event.getPostid().equals(id) && estaFecha(event.getFechaInicio(),selectedDate) ){
+                                eventList.add(event);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 eventAdapter.notifyDataSetChanged();
             }
@@ -148,7 +158,7 @@ public class CalendarFragment extends Fragment {
 
 
     private void myAttends() {
-        
+
         myAttends = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Attends").child(firebaseUser.getUid());
         
@@ -173,9 +183,6 @@ public class CalendarFragment extends Fragment {
 
     private void readAttends(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        Date date = new Date();
-        final String fecha = dateFormat.format(date);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -193,6 +200,12 @@ public class CalendarFragment extends Fragment {
                                 }
                             }
                 }
+                if(eventList.isEmpty()){
+                    no_calend.setVisibility(View.VISIBLE);
+                }else{
+                    no_calend.setVisibility(View.GONE);
+                }
+
                 eventAdapter.notifyDataSetChanged();
             }
 
@@ -206,20 +219,40 @@ public class CalendarFragment extends Fragment {
     }
 
     private boolean compararFechas(String fechaInicio) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
         final String fecha = dateFormat.format(date);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = sdf.parse(fechaInicio);
-        Date date2 = sdf.parse(fecha);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date inicio = sdf.parse(fechaInicio);
+        Date actual = sdf.parse(fecha);
 
-        if(date2.compareTo(date1)<= 0){
+        if(actual.compareTo(inicio)<= 0){
             return true;
         }else{
             return false;
         }
 
     }
+
+
+    private boolean estaFecha(String fechaInicio, String fechaElegida) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date inicio = sdf.parse(fechaInicio);
+        Date elegida = sdf.parse(fechaElegida);
+
+        if(elegida.compareTo(inicio)== 0){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+
+
+
+
+
 
 }

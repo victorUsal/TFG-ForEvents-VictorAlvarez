@@ -1,5 +1,6 @@
 package com.victor.forevents.adapter;
 
+
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
@@ -34,6 +35,7 @@ public class PlaceAutoSuggestAdapter extends ArrayAdapter implements Filterable 
     public String getItem(int pos){
         return results.get(pos);
     }
+
 
     @Override
     public Filter getFilter(){

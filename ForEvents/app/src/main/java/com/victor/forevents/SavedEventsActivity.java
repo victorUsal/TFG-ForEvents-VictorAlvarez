@@ -74,6 +74,7 @@ public class SavedEventsActivity extends AppCompatActivity {
                 mySaves.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     mySaves.add(snapshot.getKey());
+
                 }
 
                 readSaves();

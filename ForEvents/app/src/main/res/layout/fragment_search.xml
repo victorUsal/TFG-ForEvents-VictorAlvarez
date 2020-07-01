@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="55dp"
+                android:layout_marginRight="100dp"
                 android:id="@+id/search_bar"
                 android:drawableLeft="@drawable/ic_search_gray"
                 android:drawablePadding="10dp"
@@ -53,9 +53,20 @@
                 android:background="?android:attr/windowBackground"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="60dp"
 
              />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ic_calendar"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_calendario_gray"
+                    android:layout_centerVertical="true"
+                    android:background="?android:attr/windowBackground"
+                    android:layout_marginRight="15dp"/>
 
             </RelativeLayout>
 
@@ -73,14 +84,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/ic_usuario"
-            android:icon="@drawable/ic_usuario"/>
+            android:id="@+id/events_attended"
+            android:icon="@drawable/ic_calendario_search"
+            />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/events_attended"
-            android:icon="@drawable/ic_calendario_search" />
+
+            android:id="@+id/ic_usuario"
+            android:icon="@drawable/ic_usuario"
+             />
 
     </com.google.android.material.tabs.TabLayout>
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +40,11 @@ public class NotificationFragment extends Fragment {
     private NotificationAdapter notificationAdapter;
     private List<Notification> notificationList;
 
+    TextView no_noti;
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    ImageButton imageButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,11 +62,26 @@ public class NotificationFragment extends Fragment {
         recyclerView.setAdapter(notificationAdapter);
 
 
+        imageButton = (ImageButton)view.findViewById(R.id.ic_menu);
+        drawer = (DrawerLayout)getActivity().findViewById(R.id.drawer);
+        navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+        no_noti = view.findViewById(R.id.no_noti);
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(navigationView);
+
+            }
+        });
+
         readNotification();
         return view;
 
 
     }
+
+
 
 
     private void readNotification(){
@@ -71,6 +95,12 @@ public class NotificationFragment extends Fragment {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Notification notification = snapshot.getValue(Notification.class);
                     notificationList.add(notification);
+                }
+
+                if(notificationList.isEmpty()){
+                    no_noti.setVisibility(View.VISIBLE);
+                }else{
+                    no_noti.setVisibility(View.GONE);
                 }
 
                 Collections.reverse(notificationList);

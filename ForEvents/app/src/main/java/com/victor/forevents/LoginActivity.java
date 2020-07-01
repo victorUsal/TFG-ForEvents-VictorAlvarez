@@ -2,6 +2,7 @@ package com.victor.forevents;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,12 +18,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private TextView textViewQuestionSignup;
+    private TextView textViewQuestionSignup,question_forget_tv;
     private Button buttonLogin;
     private ProgressBar progressBar;
 
@@ -42,8 +49,15 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword=(EditText)findViewById(R.id.password_login_tv);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         textViewQuestionSignup = (TextView) findViewById(R.id.question_signup_tv);
+        question_forget_tv = findViewById(R.id.question_forget_tv);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        question_forget_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,ResetPasswordActivity.class));
+            }
+        });
 
         textViewQuestionSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.VISIBLE);
                                     buttonLogin.setVisibility(View.INVISIBLE);
                                     FirebaseUser user = firebaseAuth.getCurrentUser();
+                                    recuperarToken(user.getUid());
                                     updateUI(user);
                                 } else {
                                     Toast.makeText(LoginActivity.this,"No fue posible ...",Toast.LENGTH_LONG).show();
@@ -89,6 +104,28 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void recuperarToken(final String userid) {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        guardarToken(token,userid);
+                    }
+                });
+    }
+
+    private void guardarToken(String s,String userid) {
+
+        FirebaseDatabase.getInstance().getReference().child("Tokens").child(userid).child("token").setValue(s);
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -99,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void updateUI(FirebaseUser user) {
-        if(user != null){
+        if(user != null && !user.getUid().equals("JB0Ws2FpxtX4W1nhKaO1CXtxjLz1")){
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();
 

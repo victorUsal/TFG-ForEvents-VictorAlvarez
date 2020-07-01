@@ -15,6 +15,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.victor.forevents.adapter.PlaceAutoSuggestAdapter;
 import com.victor.forevents.dialog.DatePickerFragment;
 
 import java.text.SimpleDateFormat;
@@ -61,7 +63,7 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
     EditText fechaFin;
     EditText horaFin;
     EditText aforo;
-    EditText ubicacion;
+    AutoCompleteTextView ubicacion;
 
     RadioGroup radioGroup;
     RadioButton radioButton;
@@ -86,12 +88,14 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
         fechaFin = findViewById(R.id.fecha_fin_event);
         horaInicio = findViewById(R.id.hora_ini_event);
         horaFin = findViewById(R.id.hora_fin_event);
-        ubicacion = findViewById(R.id.ubicacion_event);
         aforo = findViewById(R.id.aforo_event);
         spinner = findViewById(R.id.tematica_event_spinner);
         radioGroup = findViewById(R.id.radioGroup);
-
         progressBar = findViewById(R.id.progress_circular);
+
+        ubicacion = findViewById(R.id.ubicacion_event);
+        ubicacion.setAdapter(new PlaceAutoSuggestAdapter(AddEventActivity.this, android.R.layout.simple_list_item_1));
+
 
         storageReference = FirebaseStorage.getInstance().getReference("eventos");
 
@@ -141,7 +145,7 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
                 DatePickerDialog datePicker = new DatePickerDialog(AddEventActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        final String selectedDate = twoDigits(dayOfMonth) + "/" + twoDigits(monthOfYear+1) + "/" + year;
+                        final String selectedDate = year  + "-" + twoDigits(monthOfYear+1) + "-" + twoDigits(dayOfMonth);
                         fechaFin.setText(selectedDate);
                     }
                 }, yy, mm, dd);
@@ -209,7 +213,7 @@ public class AddEventActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 // +1 because January is zero
-                final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
+                final String selectedDate = year  + "-" + twoDigits(month+1) + "-" + twoDigits(day);
                 if(tipoFecha) {
                     fechaInicio.setText(selectedDate);
                 }else{

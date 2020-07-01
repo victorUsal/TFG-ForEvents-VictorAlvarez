@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -29,17 +33,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.victor.forevents.adapter.MyEventsAdapter;
 import com.victor.forevents.model.Event;
+import com.victor.forevents.model.Tokens;
 import com.victor.forevents.model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    ImageView image_profile, options;
-    TextView events, followers, following, fullname, bio, username;
+    ImageView image_profile;
+    TextView events, followers, following, fullname, bio, username, events_empty,events_empty_attend;
     Button edit_profile;
     ImageButton back;
 
@@ -56,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
     MyEventsAdapter myEventsAdapter_attended;
     List<Event> eventList_attended;
 
+    String mtoken = "";
+    public String muser= "";
 
     FirebaseUser firebaseUser;
     String profileid;
@@ -82,6 +93,8 @@ public class ProfileActivity extends AppCompatActivity {
         my_events = findViewById(R.id.my_events);
         events_attended = findViewById(R.id.events_attended);
         back = findViewById(R.id.ic_back);
+        events_empty = findViewById(R.id.events_empty);
+        events_empty_attend = findViewById(R.id.events_empty_attend);
 
         tabLayout = findViewById(R.id.tablayout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -91,10 +104,22 @@ public class ProfileActivity extends AppCompatActivity {
                     case 0:
                         recyclerView.setVisibility(View.VISIBLE);
                         recyclerView_attended.setVisibility(View.GONE);
+                        if(eventList.isEmpty()){
+                            events_empty.setVisibility(View.VISIBLE);
+                        }else{
+                            events_empty.setVisibility(View.GONE);
+                        }
+                        events_empty_attend.setVisibility(View.GONE);
                         break;
                     case 1:
                         recyclerView.setVisibility(View.GONE);
                         recyclerView_attended.setVisibility(View.VISIBLE);
+                        if(eventList_attended.isEmpty()){
+                            events_empty_attend.setVisibility(View.VISIBLE);
+                        }else{
+                            events_empty_attend.setVisibility(View.GONE);
+                        }
+                        events_empty.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -130,14 +155,19 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView_attended.setVisibility(View.GONE);
 
+
         userInfo();
         getFollowers();
         getNumEvents();
         myEvents();
         myEventsAttended();
+        nombreNotification();
+        myToken();
 
         if(profileid.equals(firebaseUser.getUid())){
             edit_profile.setText("Editar perfil");
+        }else if(profileid.equals("eWXNrrAlqsaW7jmjq4V3SnyU74N2") || profileid.equals("MH9jqhjZszNSZtepkRKZNQjd3Of1")){
+            edit_profile.setVisibility(View.GONE);
         }else{
             checkFollow();
         }
@@ -194,22 +224,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        my_events.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerView.setVisibility(View.VISIBLE);
-                recyclerView_attended.setVisibility(View.GONE);
-            }
-        });
 
-        events_attended.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerView.setVisibility(View.GONE);
-                recyclerView_attended.setVisibility(View.VISIBLE);
-            }
-        });*/
 
     }
 
@@ -247,8 +262,10 @@ public class ProfileActivity extends AppCompatActivity {
         hashMap.put("userid", firebaseUser.getUid());
         hashMap.put("text", "Te ha comenzado a seguir");
         hashMap.put("postid", "");
+        hashMap.put("tag", "seguir");
         hashMap.put("isPost", false);
 
+        llamarEspecifico(muser, "Te ha comenzado a seguir");
         reference.push().setValue(hashMap);
     }
 
@@ -341,6 +358,13 @@ public class ProfileActivity extends AppCompatActivity {
                         eventList.add(event);
                     }
                 }
+                if(eventList.isEmpty()){
+                    events_empty.setVisibility(View.VISIBLE);
+                }else{
+                    events_empty.setVisibility(View.GONE);
+                }
+                events_empty_attend.setVisibility(View.GONE);
+
 
                 Collections.reverse(eventList);
                 myEventsAdapter.notifyDataSetChanged();
@@ -389,6 +413,8 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+
                 myEventsAdapter.notifyDataSetChanged();
             }
 
@@ -398,6 +424,81 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void myToken(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Tokens").child(profileid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Tokens token = dataSnapshot.getValue(Tokens.class);
+                mtoken = token.getToken();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void nombreNotification(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(this == null){
+                    return;
+                }
+                User user = dataSnapshot.getValue(User.class);
+
+                muser = user.getUsername();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void llamarEspecifico(String titulo, String detalle){
+        RequestQueue myrequest = Volley.newRequestQueue(getApplicationContext());
+        JSONObject json = new JSONObject();
+
+        try{
+            json.put("to",mtoken);
+            JSONObject notificacion = new JSONObject();
+            notificacion.put("titulo",titulo);
+            notificacion.put("detalle", detalle);
+
+            json.put("data", notificacion);
+
+            String URL = "https://fcm.googleapis.com/fcm/send";
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,URL,json,null,null){
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String,String> header = new HashMap<>();
+
+                    header.put("content-type", "application/json");
+                    header.put("authorization", "key= AAAA3xj18jc:APA91bEVaKYf4hLZVjdFdl8mOq2tysW7afzZKFET5WMnjZ11FEUy8KytjVntlJE4kLSknq05vWLzyncxLiw8Xi0bMeq0xHpvgpi5-r-tF24h06iRWbHv7iZ9TtezNR-7jjRgcY5wGPGC");
+                    return header;
+                }
+            };
+
+            myrequest.add(request);
+
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 
 

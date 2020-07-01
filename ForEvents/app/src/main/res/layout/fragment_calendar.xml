@@ -69,6 +69,20 @@
         android:layout_below="@+id/bar"
         android:id="@+id/recycler_view"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_calendar"
+        android:layout_centerInParent="true"
+        android:text="@string/no_calendar"
+        android:textAlignment="center"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"/>
+
+
+
 
 
 </RelativeLayout>

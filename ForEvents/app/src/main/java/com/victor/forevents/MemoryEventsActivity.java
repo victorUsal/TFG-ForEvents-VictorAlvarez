@@ -125,11 +125,11 @@ public class MemoryEventsActivity extends AppCompatActivity {
 
 
     private boolean compararFechas(String fechaInicio) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = new Date();
         final String fecha = dateFormat.format(date);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date evento = sdf.parse(fechaInicio);
         Date actual = sdf.parse(fecha);
 

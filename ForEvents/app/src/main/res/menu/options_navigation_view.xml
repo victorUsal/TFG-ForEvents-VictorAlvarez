@@ -6,16 +6,16 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_usuario"
-        android:title="Perfil" />
+        android:title="@string/perfil_tv" />
     <item
         android:id="@+id/nav_save_events"
         android:icon="@drawable/ic_save"
-        android:title="Eventos Guardados" />
+        android:title="@string/saved_events_tv" />
 
     <item
         android:id="@+id/nav_personal_events"
         android:icon="@drawable/ic_personal_moments"
-        android:title="Momentos personales" />
+        android:title="@string/memory_events_tv" />
     </group>
 
 
@@ -25,11 +25,11 @@
         <item
             android:id="@+id/nav_configuration"
             android:icon="@drawable/ic_config"
-            android:title="Configuración y privacidad" />
+            android:title="@string/configuracion_tv" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_help"
-            android:title="Centro de ayuda" />
+            android:title="@string/help_tv" />
     </group>
 
 

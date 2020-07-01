@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +107,7 @@ public class SignupActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.VISIBLE);
                                 buttonSignup.setVisibility(View.INVISIBLE);
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                                recuperarToken(user.getUid());
                                 updateUI(user);
                             }else{
                                 Toast.makeText(SignupActivity.this,"No se añadio a la base de datos",Toast.LENGTH_SHORT).show();
@@ -124,12 +127,34 @@ public class SignupActivity extends AppCompatActivity {
 
 
     private void updateUI(FirebaseUser user) {
-        if(user != null){
-            startActivity(new Intent(SignupActivity.this, HomeActivity.class));
+        if(user != null && !user.getUid().equals("JB0Ws2FpxtX4W1nhKaO1CXtxjLz1")){
+            startActivity(new Intent(SignupActivity.this, PreferenceActivity.class));
             finish();
         }
     }
 
+    private void recuperarToken(final String userid) {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        guardarToken(token,userid);
+                    }
+                });
+    }
+
+    private void guardarToken(String s,String userid) {
+
+        FirebaseDatabase.getInstance().getReference().child("Tokens").child(userid).child("token").setValue(s);
+
+    }
+    
     @Override
     public void onStart() {
         super.onStart();

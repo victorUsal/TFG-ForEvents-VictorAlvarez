@@ -3,16 +3,16 @@
 
 
     <item android:id="@+id/edit"
-        android:title="Editar evento"/>
+        android:title="@string/editar_ev"/>
 
     <item android:id="@+id/share"
-        android:title="Compartir evento"/>
+        android:title="@string/compartir"/>
 
     <item android:id="@+id/delete"
-        android:title="Eliminar evento"/>
+        android:title="@string/eliminar_ev"/>
 
     <item android:id="@+id/report"
-        android:title="Denunciar evento"/>
+        android:title="@string/denunciar"/>
 
 
 </menu>

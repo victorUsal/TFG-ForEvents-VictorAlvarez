@@ -99,12 +99,10 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/dia"
                         android:layout_alignParentLeft="true"
-
                         android:textSize="16sp"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:textColor="@color/colorBlack"
-                        android:text="06"/>
+                        android:textColor="@color/colorBlack"/>
 
 
                     <TextView
@@ -112,12 +110,10 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/nombreMes"
                         android:layout_alignParentLeft="true"
-
                         android:textSize="16sp"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:textColor="@color/colorBlack"
-                        android:text="MAR"/>
+                        android:textColor="@color/colorBlack" />
 
 
                 </LinearLayout>
@@ -149,8 +145,7 @@
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:text="Concierto Benefico"/>
+                        android:textSize="20sp"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -174,9 +169,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_toRightOf="@id/icon_ubicacion"
-                            android:textSize="15sp"
-                            android:text="Calle Béjar Nº 40,Plasencia"
-                            />
+                            android:textSize="15sp" />
 
 
                     </RelativeLayout>

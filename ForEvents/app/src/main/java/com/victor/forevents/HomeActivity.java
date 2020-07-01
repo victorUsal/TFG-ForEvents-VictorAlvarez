@@ -15,6 +15,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.victor.forevents.fragment.CalendarFragment;
 import com.victor.forevents.fragment.HomeFragment;
 import com.victor.forevents.fragment.NotificationFragment;
@@ -47,6 +50,12 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        FirebaseMessaging.getInstance().subscribeToTopic("enviaratodos").addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -140,6 +149,11 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
             case R.id.nav_configuration:
                 selectedFragment = null;
                 startActivity(new Intent(HomeActivity.this,OptionsActivity.class));
+                break;
+
+            case R.id.nav_help :
+                selectedFragment = null;
+                startActivity(new Intent(HomeActivity.this,HelpActivity.class));
                 break;
 
         }

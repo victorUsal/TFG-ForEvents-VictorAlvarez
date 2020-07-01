@@ -47,10 +47,10 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/bar">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bar">
 
 
         <LinearLayout
@@ -155,7 +155,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
-                            android:text="Eventos"/>
+                            android:text="@string/eventos"/>
 
                 </LinearLayout>
 
@@ -189,7 +189,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
-                            android:text="Seguidores"/>
+                            android:text="@string/seguidores"/>
 
                     </LinearLayout>
 
@@ -223,7 +223,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
-                            android:text="Siguiendo"/>
+                            android:text="@string/siguiendo"/>
 
                     </LinearLayout>
 
@@ -264,6 +264,22 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp">
 
+                <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/events_empty"
+                android:layout_margin="15dp"
+                android:text="@string/no_events_tv"
+                android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/events_empty_attend"
+                    android:layout_margin="15dp"
+                    android:text="@string/no_events_attend_tv"
+                    android:visibility="gone"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
@@ -284,7 +300,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 

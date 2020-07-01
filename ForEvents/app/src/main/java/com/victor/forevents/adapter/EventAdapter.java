@@ -6,16 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,9 +37,7 @@ import com.victor.forevents.model.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -86,10 +79,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         valor_mes_completo = nombreMesCompleto(event.getFechaInicio());
 
 
-        String[] fechaDividida = event.getFechaInicio().split("/");
-        String dias = fechaDividida[0];
+        String[] fechaDividida = event.getFechaInicio().split("-");
+        String anio = fechaDividida[0];
         String mes = fechaDividida[1];
-        String anio = fechaDividida[2];
+        String dias = fechaDividida[2];
 
 
         if(tag.equals("attend")){
@@ -113,7 +106,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                         holder.fecha_titulo.setVisibility(View.GONE);
                     } else {
                         holder.fecha_titulo.setVisibility(View.VISIBLE);
-                        holder.fecha_titulo.setText(valor_dia+ " "+valor_mes+" "+event.getFechaInicio());
+                        holder.fecha_titulo.setText(valor_dia+ ", "+dias+" "+valor_mes_completo+" "+anio);
                     }
 
                 }
@@ -192,59 +185,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             }
         });
 
-       /* holder.more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, v);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.edit:
-                                editPost(event.getPostid());
-                                return true;
-                            case R.id.share:
-                                BitmapDrawable bitmapDrawable = (BitmapDrawable)holder.post_image.getDrawable();
-                                if(bitmapDrawable == null){
-                                    shareTextOnly(event.getNombre(), event.getDescripcion());
-                                }else{
-                                    Bitmap bitmap = bitmapDrawable.getBitmap();
-                                    shareImageAndText(event.getNombre(),event.getDescripcion(),bitmap);
-
-                                }
-
-                            return true;
-                            case R.id.delete:
-                                FirebaseDatabase.getInstance().getReference("Posts").child(event.getPostid()).removeValue()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
-                                                    Toast.makeText(context,"Evento eliminado", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                return true;
-                            case R.id.report:
-                                Toast.makeText(context,"Evento denunciado", Toast.LENGTH_SHORT).show();
-                                return true;
-                            default:
-                                return false;
-
-                        }
-                    }
-                });
-
-                popupMenu.inflate(R.menu.post_menu);
-                if(!event.getPublisher().equals(firebaseUser.getUid())){
-                    popupMenu.getMenu().findItem(R.id.edit).setVisible(false);
-                    popupMenu.getMenu().findItem(R.id.delete).setVisible(false);
-                }
-                popupMenu.show();
-            }
-        });
-
-        */
 
 
     }
@@ -301,8 +241,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView image_profile, post_image,more, like,comment, save;
-        public TextView username,likes,publisher,titulo,fecha,ubicacion,comments,descripcion,fecha_titulo,dia,nombreMes;
+        public ImageView image_profile, post_image;
+        public TextView username,titulo,ubicacion,fecha_titulo,dia,nombreMes;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -313,15 +253,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             post_image = itemView.findViewById(R.id.post_image_event);
             dia = itemView.findViewById(R.id.dia);
             nombreMes = itemView.findViewById(R.id.nombreMes);
-           // like = itemView.findViewById(R.id.like);
-           // likes = itemView.findViewById(R.id.likes);
-            //comment = itemView.findViewById(R.id.comment);
-          //  save = itemView.findViewById(R.id.save);
             username = itemView.findViewById(R.id.publisher);
             titulo = itemView.findViewById(R.id.titulo_evento);
-            //fecha =itemView.findViewById(R.id.fecha);
             ubicacion = itemView.findViewById(R.id.ubicacion);
-            //more = itemView.findViewById(R.id.more_options);
+
 
         }
     }
@@ -433,10 +368,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
 
     public static String diaSemana(String fecha) {
 
-        String[] fechaDividida = fecha.split("/");
-        int dias = Integer.parseInt(fechaDividida[0]);
+        String[] fechaDividida = fecha.split("-");
+        int anio = Integer.parseInt(fechaDividida[0]);
         int mes = Integer.parseInt(fechaDividida[1]);
-        int anio = Integer.parseInt(fechaDividida[2]);
+        int dias = Integer.parseInt(fechaDividida[2]);
 
         String dia="";
         int numD;
@@ -461,10 +396,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     }
 
     public static String nombreMes(String fecha){
-        String[] fechaDividida = fecha.split("/");
-        int dias = Integer.parseInt(fechaDividida[0]);
+        String[] fechaDividida = fecha.split("-");
+        int anio = Integer.parseInt(fechaDividida[0]);
         int mes = Integer.parseInt(fechaDividida[1]);
-        int anio = Integer.parseInt(fechaDividida[2]);
+        int dias = Integer.parseInt(fechaDividida[2]);
         String nombreMes="";
 
         if(mes == 1){
@@ -499,10 +434,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     }
 
     public static String nombreMesCompleto(String fecha){
-        String[] fechaDividida = fecha.split("/");
-        int dias = Integer.parseInt(fechaDividida[0]);
+        String[] fechaDividida = fecha.split("-");
+        int anio = Integer.parseInt(fechaDividida[0]);
         int mes = Integer.parseInt(fechaDividida[1]);
-        int anio = Integer.parseInt(fechaDividida[2]);
+        int dias = Integer.parseInt(fechaDividida[2]);
         String nombreMes="";
 
         if(mes == 1){

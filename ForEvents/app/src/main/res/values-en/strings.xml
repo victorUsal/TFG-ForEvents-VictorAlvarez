@@ -1,0 +1,134 @@
+<resources>
+    //START
+    <string name="app_name">ForEvents</string>
+    <string name="start_tv">Thousands of events that are happening around you, do not miss them</string>
+    <string name="start_button">Create an account</string>
+    <string name="question_account_tv">¿Do you alredy have an account?</string>
+    <string name="login_tv">Log in</string>
+
+    //LOGIN Y SIGNUP
+    <string name="loginFE_tv">Login to ForEvents.</string>
+    <string name="login_button">Log in</string>
+    <string name="email_et">Email</string>
+    <string name="password_et">Password</string>
+    <string name="question_signup_tv">Don not hace an account yet? Sign up</string>
+    <string name="question_forget_password_tv">Have you forgotten your password?</string>
+
+    <string name="signupFE_tv">Creat your account</string>
+    <string name="reset_tv">Recover password</string>
+    <string name="preference_tv">Select the categories that interest you</string>
+    <string name="signup_button">Sign in</string>
+    <string name="reset_button">Restore password</string>
+    <string name="personal_tv">Personal</string>
+    <string name="username_et">Username</string>
+    <string name="name_et">Name</string>
+    <string name="event_recommendation">Recommended events</string>
+    <string name="event_follow">Events that you follow</string>
+
+
+    //VARIOS
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="search_user_et">Search...</string>
+    <string name="saved_events_tv">Saved Events</string>
+    <string name="forevents_info">About ForEvents</string>
+    <string name="memory_events_tv">Personal Moments</string>
+    <string name="help_tv">Help Center</string>
+    <string name="comentario_tv">Comments</string>
+    <string name="edit_profile_tv">Edit profile</string>
+    <string name="perfil_tv">Profile</string>
+    <string name="notifications_tv">Notifications</string>
+    <string name="agend_tv">My Calendar</string>
+    <string name="save_button">Save</string>
+    <string name="change_photo_tv">Change profile photo</string>
+    <string name="bio_et">Biography</string>
+    <string name="publico_rb">Public</string>
+    <string name="privado_rb">Private</string>
+    <string name="followers_tv">Followers</string>
+    <string name="no_events_tv">You have not created any event, share your next event in ForEvents</string>
+    <string name="no_events_attend_tv">You have not attended any event, search to find events that interest you</string>
+    <string name="no_events_follow">You do not follow any event, search to find events that interest you</string>
+    <string name="no_notification">No notifications...</string>
+    <string name="no_calendar">There are not scheduled events...</string>
+    <string name="tendencias">Trends</string>
+    <string name="tipo_tv">Event type: </string>
+    <string name="enviar_tv">Send</string>
+    <string name="mensaje">Message...</string>
+    <string name="add_comment">Add your comment...</string>
+    <string name="preferencias">Preferences</string>
+    <string name="notificaciones">Notifications</string>
+    <string name="general">General</string>
+    <string name="otros">Others</string>
+    <string name="idioma">Language</string>
+    <string name="eventos">Events</string>
+    <string name="seguidores">Followers</string>
+    <string name="asistir">Attend</string>
+    <string name="informacion">Information</string>
+    <string name="opiniones">Reviews</string>
+    <string name="comienza">START:</string>
+    <string name="finaliza">END:</string>
+    <string name="aceptar_min">accept</string>
+    <string name="rechazar_min">cancel</string>
+    <string name="username">username</string>
+    <string name="fullname">Full Name</string>
+    <string name="seguir">follow</string>
+    <string name="invitar">invite</string>
+    <string name="hora">TIME</string>
+    <string name="aforo">CAPACITY:</string>
+    <string name="ubicacion">LOCATION:</string>
+    <string name="descripcion">Event description: </string>
+    <string name="siguiendo">Following</string>
+    <string name="change_pwd">Change password</string>
+    <string name="remove_user">Delete Account</string>
+    <string name="inicio_seguridad">Login and security</string>
+    <string name="bienvenido_help">Welcome to the ForEvents Help Center</string>
+    <string name="problema_tv">Send us your problem and our technical team will do everything possible to help you: </string>
+    <string name="info_forevents">ForEvents is an application associated with the realization of a TFG, which aims to show and recommend events to users who use it.</string>
+
+    //ADD EVENTO
+    <string name="add_event_button">Add Event</string>
+    <string name="accept_button">Accept</string>
+    <string name="image_event_tv">Add the event poster</string>
+    <string name="name_event_tv">Event title</string>
+    <string name="description_event_tv">Event description...</string>
+    <string name="fecha_ini_event_et">Start date</string>
+    <string name="hora_ini_event_et">Start time</string>
+    <string name="fecha_fin_event_et">End date</string>
+    <string name="hora_fin_event_et">End time</string>
+    <string name="ubicacion_event_tv">Event location</string>
+    <string name="aforo_event_tv">Event capacity</string>
+    <string name="tematica_event_tv">Event category</string>
+    <string name="tipo_event_tv">Event type</string>
+    <string name="configuracion_tv">Settings and privacy</string>
+    <string name="cuenta_tv">Account</string>
+    <string name="setting_tv">This setting will affect all ForEvents accounts on this device</string>
+    <string name="logout_tv">Log out</string>
+
+
+    <string name="filtro_tv">Search Filter</string>
+    <string name="categorias">Categories</string>
+    <string name="aceptar">Accept</string>
+    <string name="cancelar">Cancel</string>
+    <string name="deshacer">Undo</string>
+
+
+    <string name="editar_ev">Edit Event</string>
+    <string name="compartir">Share Event</string>
+    <string name="denunciar">Report Event</string>
+    <string name="eliminar_ev">Delete Event</string>
+
+    <string-array name="tematica_spinner">
+        <item>Academic</item>
+        <item>Community</item>
+        <item>Cultural</item>
+        <item>Sports</item>
+        <item>Business</item>
+        <item>Leisure</item>
+        <item>Political</item>
+        <item>Social</item>
+    </string-array>
+
+
+</resources>

@@ -23,15 +23,21 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
                     android:id="@+id/post_image_event"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:src="@drawable/gradient_black" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ic_back"
-                    android:src="@drawable/ic_back"
+                    android:src="@drawable/ic_back_white"
                     android:background="@android:color/transparent"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="15dp"/>
 
                 <ImageView
                     android:layout_width="18dp"
@@ -135,7 +141,7 @@
                         android:paddingLeft="10dp"
                         android:drawableLeft="@drawable/ic_unchecked"
                         android:drawablePadding="12dp"
-                        android:text="Asistir"
+                        android:text="@string/asistir"
                         android:layout_centerVertical="true"
                         android:background="@drawable/button_style_asistir"
                         android:textColor="@color/colorGray"
@@ -162,6 +168,14 @@
                             android:layout_height="24dp"
                             android:id="@+id/save"
                             android:src="@drawable/ic_bookmark_gray"
+                            android:layout_toRightOf="@id/comment"
+                            android:layout_marginLeft="20dp"/>
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:id="@+id/invitation"
+                            android:src="@drawable/ic_send_invitation"
                             android:layout_toRightOf="@id/comment"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="10dp"/>
@@ -195,13 +209,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/informacion_evento"
-                    android:text="Información"/>
+                    android:text="@string/informacion"/>
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/opiniones_evento"
-                    android:text="Opiniones"/>
+                    android:text="@string/opiniones"/>
 
             </com.google.android.material.tabs.TabLayout>
 
@@ -223,7 +237,6 @@
                             android:layout_marginRight="15dp"
                             android:layout_toLeftOf="@id/tipo_evento"
                             android:gravity="center"
-                            android:text="Cultural"
                             android:textStyle="bold"
                             android:textColor="@color/colorWhite"
                             android:background="@drawable/style_cultural"
@@ -235,7 +248,7 @@
                             android:layout_marginRight="15dp"
                             android:layout_alignParentRight="true"
                             android:gravity="center"
-                            android:text="Público"
+                            android:text="@string/publico_rb"
                             android:textStyle="bold"
                             android:textColor="@color/colorWhite"
                             android:background="@drawable/style_public"
@@ -247,7 +260,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/titulo_descripcion"
-                        android:text="Descripción del evento: "
+                        android:text="@string/descripcion"
                         android:textColor="@color/colorBlack"
                         android:textStyle="bold"
                         android:layout_marginLeft="15dp"
@@ -260,7 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/descripcion_evento"
-                        android:maxLines="10"
+                        android:maxLines="30"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="5dp" />
@@ -269,7 +282,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/titulo_comienzo"
-                        android:text="COMIENZA: "
+                        android:text="@string/comienza"
                         android:textColor="@color/colorBlack"
                         android:textStyle="bold"
                         android:layout_marginLeft="15dp"
@@ -288,38 +301,32 @@
                         android:gravity="center_vertical">
 
                         <TextView
+                            android:id="@+id/fecha_ini_evento"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/fecha_ini_evento"/>
-
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/gradient_style"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:orientation="vertical">
+                            android:layout_height="wrap_content" />
 
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="30dp"
-                                android:id="@+id/titulo_hora"
-                                android:text="HORA"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginRight="15dp"
                                 android:textStyle="bold"
+                                android:id="@+id/titulo_hora"
+                                android:text="@string/hora"
                                 android:textColor="@color/colorBlack"/>
 
 
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="25dp"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorWhite"
+                                android:background="@drawable/style_community"
                                 android:id="@+id/hora_ini_evento" />
-                        </LinearLayout>
+
 
 
                     </LinearLayout>
@@ -353,33 +360,28 @@
                             android:id="@+id/fecha_fin_evento" />
 
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/gradient_style"
-                            android:paddingTop="3dp"
-                            android:paddingBottom="3dp"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:orientation="vertical">
-
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="30dp"
+                                android:layout_height="wrap_content"
                                 android:id="@+id/titulo_hora_fin"
-                                android:text="HORA"
+                                android:text="@string/hora"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginRight="15dp"
                                 android:textStyle="bold"
                                 android:textColor="@color/colorBlack"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="25dp"
                                 android:id="@+id/hora_fin_evento"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorWhite"
+                                android:background="@drawable/style_community"
                                 />
-                        </LinearLayout>
+
 
 
                     </LinearLayout>
@@ -388,7 +390,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/titulo_aforo"
-                        android:text="AFORO: "
+                        android:text="@string/aforo"
                         android:textColor="@color/colorBlack"
                         android:textStyle="bold"
                         android:layout_marginLeft="15dp"
@@ -409,7 +411,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/titulo_ubicacion"
-                        android:text="UBICACIÓN: "
+                        android:text="@string/ubicacion"
                         android:textColor="@color/colorBlack"
                         android:textStyle="bold"
                         android:layout_marginLeft="15dp"

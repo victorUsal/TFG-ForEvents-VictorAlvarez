@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,10 +48,12 @@ public class StartActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+
     }
 
     private void updateUI(FirebaseUser user) {
-        if(user != null){
+        if(user != null && !user.getUid().equals("JB0Ws2FpxtX4W1nhKaO1CXtxjLz1")){
+           // Toast.makeText(StartActivity.this,user.getEmail(),Toast.LENGTH_LONG).show();
             startActivity(new Intent(StartActivity.this, HomeActivity.class));
             finish();
         }

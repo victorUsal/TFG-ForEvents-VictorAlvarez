@@ -222,7 +222,7 @@
 
         </LinearLayout>
 
-        <EditText
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -232,8 +232,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:hint="@string/ubicacion_event_tv"
-            android:id="@+id/ubicacion_event"
-            android:background="@drawable/edit_text_add_event_style"/>
+            android:id="@+id/ubicacion_event" />
 
         <EditText
             android:layout_width="match_parent"

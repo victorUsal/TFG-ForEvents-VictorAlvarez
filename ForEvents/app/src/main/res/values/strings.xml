@@ -15,9 +15,15 @@
     <string name="question_forget_password_tv">¿Olvidaste tu contraseña?</string>
 
     <string name="signupFE_tv">Crea tu cuenta</string>
+    <string name="reset_tv">Recuperar contraseña</string>
+    <string name="preference_tv">Selecciona las categorias que te interesan</string>
     <string name="signup_button">Registrarse</string>
+    <string name="reset_button">Restablecer contaseña</string>
+    <string name="personal_tv">Personal</string>
     <string name="username_et">Nombre de usuario</string>
     <string name="name_et">Nombre</string>
+    <string name="event_recommendation">Eventos recomendados</string>
+    <string name="event_follow">Eventos que persigues</string>
 
 
     //VARIOS
@@ -27,7 +33,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="search_user_et">Buscar...</string>
     <string name="saved_events_tv">Eventos guardados</string>
+    <string name="forevents_info">Acerca de ForEvents</string>
     <string name="memory_events_tv">Momentos personales</string>
+    <string name="help_tv">Centro de ayuda</string>
+    <string name="comentario_tv">Comentarios</string>
     <string name="edit_profile_tv">Editar perfil</string>
     <string name="perfil_tv">Perfil</string>
     <string name="notifications_tv">Notificaciones</string>
@@ -38,10 +47,53 @@
     <string name="publico_rb">Público</string>
     <string name="privado_rb">Privado</string>
     <string name="followers_tv">Seguidores</string>
+    <string name="no_events_tv">No has creado ningún evento, comparte tu próximo evento en ForEvents</string>
+    <string name="no_events_attend_tv">No has asistido a ningún evento, explora para encontrar eventos que te interesen</string>
+    <string name="no_events_follow">No persigues ningún evento, explora para encontrar eventos que te interesen</string>
+    <string name="no_notification">No hay notificaciones...</string>
+    <string name="no_calendar">No hay eventos programados...</string>
+    <string name="tendencias">Tendencias</string>
     <string name="tipo_tv">Tipo de Evento: </string>
+    <string name="enviar_tv">Enviar</string>
+    <string name="mensaje">Mensaje...</string>
+    <string name="add_comment">Añade tu comentario...</string>
+    <string name="preferencias">Preferencias</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="general">General</string>
+    <string name="otros">Otros</string>
+    <string name="idioma">Idioma</string>
+    <string name="eventos">Eventos</string>
+    <string name="seguidores">Seguidores</string>
+    <string name="asistir">Asistir</string>
+    <string name="informacion">Información</string>
+    <string name="opiniones">Opiniones</string>
+    <string name="comienza">COMIENZA:</string>
+    <string name="finaliza">FINALIZA:</string>
+    <string name="aceptar_min">aceptar</string>
+    <string name="rechazar_min">rechazar</string>
+    <string name="username">username</string>
+    <string name="fullname">Full Name</string>
+    <string name="seguir">seguir</string>
+    <string name="invitar">invitar</string>
+    <string name="hora">HORA</string>
+    <string name="aforo">AFORO:</string>
+    <string name="ubicacion">UBICACIÓN:</string>
+    <string name="descripcion">Descripción del evento:</string>
+    <string name="siguiendo">Siguiendo</string>
+    <string name="change_pwd">Cambiar contraseña</string>
+    <string name="remove_user">Eliminar Cuenta</string>
+    <string name="editar_ev">Editar Evento</string>
+    <string name="compartir">Compartir Evento</string>
+    <string name="denunciar">Denunciar Evento</string>
+    <string name="eliminar_ev">Eliminar Evento</string>
+    <string name="inicio_seguridad">Inicio de sesión y seguridad</string>
+    <string name="bienvenido_help">Bienvenido al centro de ayuda de ForEvents</string>
+    <string name="problema_tv">Envianos tu problema y nuestro equipo técnico hará lo posible para ayudarte: </string>
+    <string name="info_forevents">ForEvents es una aplicación asociada a la realización de un TFG, que persigue mostrar y recomendar eventos a los usuarios que la utilicen.</string>
 
     //ADD EVENTO
     <string name="add_event_button">Añadir Evento</string>
+    <string name="accept_button">Aceptar</string>
     <string name="image_event_tv">Añade el cartel del evento</string>
     <string name="name_event_tv">Titulo del evento</string>
     <string name="description_event_tv">Descripcion del evento...</string>
@@ -54,8 +106,19 @@
     <string name="tematica_event_tv">Tematica del evento</string>
     <string name="tipo_event_tv">Tipo del evento</string>
     <string name="configuracion_tv">Configuración y privacidad</string>
-    <string name="setting_tv">Ajustes</string>
+    <string name="cuenta_tv">Cuenta</string>
+    <string name="setting_tv">Está configuracion afectará a todas las cuentas de ForEvents en este dispositivo</string>
     <string name="logout_tv">Cerrar sesión</string>
+
+
+    <string name="filtro_tv">Filtro de Búsqueda</string>
+    <string name="categorias">Categorias</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="deshacer">Deshacer</string>
+
+
+
 
     <string-array name="tematica_spinner">
         <item>Acádemico</item>
