@@ -64,16 +64,16 @@ event_user = Rating_avg.groupby(by = 'userId')['eventId'].apply(lambda x:','.joi
 
 
 def recomendar(user):
-    event_seen_by_user = check.columns[check[check.index==user].notna().any()].tolist()
+    evento_visto_por_usuario = check.columns[check[check.index==user].notna().any()].tolist()
     a = sim_user_30_m[sim_user_30_m.index==user].values
     b = a.squeeze().tolist()
     d = event_user[event_user.index.isin(b)]
     l = ','.join(d.values)
-    event_seen_by_similar_users = l.split(',')
-    events_under_consideration = list(set(event_seen_by_similar_users)-set(list(map(str, event_seen_by_user))))
-    events_under_consideration = list(map(str, events_under_consideration))
+    evento_visto_por_usuario_similar = l.split(',')
+    eventos_considerados = list(set(evento_visto_por_usuario_similar)-set(list(map(str, evento_visto_por_usuario))))
+    eventos_considerados = list(map(str, eventos_considerados))
     score = []
-    for item in events_under_consideration:
+    for item in eventos_considerados:
         c = final_event.loc[:,item]
         d = c[c.index.isin(b)]
         f = d[d.notnull()]
@@ -87,7 +87,7 @@ def recomendar(user):
         deno = fin['correlation'].sum()
         final_score = avg_user + (nume/deno)
         score.append(final_score)
-    data = pd.DataFrame({'eventId':events_under_consideration,'score':score})
+    data = pd.DataFrame({'eventId':eventos_considerados,'score':score})
     top_5_recomendaciones = data.sort_values(by='score',ascending=False).head(5)
     event_id = top_5_recomendaciones.merge(events, how='inner', on='eventId')
     event_ids = event_id.eventId.values.tolist()
@@ -99,6 +99,6 @@ for element in userid:
     print("Recomendacion para: "+element)
     predicted_events = recomendar(element)  
     for i in predicted_events:
-        #data = {i: "true"}
-        #db.child("Recommendations/").child(element).child(i).set(True)
+        data = {i: "true"}
+        db.child("Recommendations/").child(element).child(i).set(True)
         print(i)
