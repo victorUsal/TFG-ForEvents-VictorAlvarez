@@ -32,21 +32,13 @@ check.head()
 final = pd.pivot_table(Rating_avg,values='adg_rating',index='userId',columns='eventId')
 final.head()
 
-# Replacing NaN by event Average
+# Reemplazando NAN por eventos promedio
 final_event = final.fillna(final.mean(axis=0))
 
-# Replacing NaN by user Average
+# Reemplazando NAN por usuarios promedio
 final_user = final.apply(lambda row: row.fillna(row.mean()), axis=1)
 
-
-# user similarity on replacing NAN by user avg
-b = cosine_similarity(final_user)
-np.fill_diagonal(b, 0 )
-similarity_with_user = pd.DataFrame(b,index=final_user.index)
-similarity_with_user.columns=final_user.index
-similarity_with_user.head()
-
-# user similarity on replacing NAN by item(event) avg
+# usuarios similares reemplazando NAN por eventos avg
 cosine = cosine_similarity(final_event)
 np.fill_diagonal(cosine, 0 )
 similarity_with_event = pd.DataFrame(cosine,index=final_event.index)
@@ -54,7 +46,7 @@ similarity_with_event.columns=final_user.index
 similarity_with_event.head()
 
 
-def find_n_neighbours(df,n):
+def buscar_n_vecinos(df,n):
     order = np.argsort(df.values, axis=1)[:, :n]
     df = df.apply(lambda x: pd.Series(x.sort_values(ascending=False)
            .iloc[:n].index, 
@@ -62,33 +54,16 @@ def find_n_neighbours(df,n):
     return df
 
 
-# top 30 neighbours for each user
-sim_user_30_u = find_n_neighbours(similarity_with_user,30)
-sim_user_30_u.head()
-
-sim_user_30_m = find_n_neighbours(similarity_with_event,30)
+# top 30 vecinos por eventos
+sim_user_30_m = buscar_n_vecinos(similarity_with_event,30)
 sim_user_30_m.head()
-
-def get_user_similar_events( user1, user2 ):
-    common_events = Rating_avg[Rating_avg.userId == user1].merge(
-    Rating_avg[Rating_avg.userId == user2],
-    on = "eventId",
-    how = "inner" )
-    return common_events.merge( events, on = 'eventId' )
-
-    
-a = get_user_similar_events('t8EGuWbIeCTPvHLVO2Kryfl8FyI2','ANqoJa9z1hOu0QXWg00uI5Lbbg82')
-a = a.loc[ : , ['rating_x_x','rating_x_y','title']]
-a.head()
-
 
 
 Rating_avg = Rating_avg.astype({"eventId": str})
 event_user = Rating_avg.groupby(by = 'userId')['eventId'].apply(lambda x:','.join(x))
 
 
-
-def User_item_score1(user):
+def recomendar(user):
     event_seen_by_user = check.columns[check[check.index==user].notna().any()].tolist()
     a = sim_user_30_m[sim_user_30_m.index==user].values
     b = a.squeeze().tolist()
@@ -113,16 +88,17 @@ def User_item_score1(user):
         final_score = avg_user + (nume/deno)
         score.append(final_score)
     data = pd.DataFrame({'eventId':events_under_consideration,'score':score})
-    top_5_recommendation = data.sort_values(by='score',ascending=False).head(5)
-    event_Name = top_5_recommendation.merge(events, how='inner', on='eventId')
-    event_Names = event_Name.eventId.values.tolist()
-    return event_Names
+    top_5_recomendaciones = data.sort_values(by='score',ascending=False).head(5)
+    event_id = top_5_recomendaciones.merge(events, how='inner', on='eventId')
+    event_ids = event_id.eventId.values.tolist()
+    return event_ids
+
 
 userid = (Mean['userId'])
 for element in userid: 
     print("Recomendacion para: "+element)
-    predicted_events = User_item_score1(element)  
+    predicted_events = recomendar(element)  
     for i in predicted_events:
-        data = {i: "true"}
-        db.child("Recommendations/").child(element).child(i).set(True)
+        #data = {i: "true"}
+        #db.child("Recommendations/").child(element).child(i).set(True)
         print(i)
